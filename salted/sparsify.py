@@ -4,7 +4,7 @@ import sys
 import h5py
 import os
 import os.path as osp
-from typing import Union, Literal, Optional
+from typing import Union, Literal, Optional, Dict
 
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
@@ -77,6 +77,8 @@ def do_fps_new(data:numpy.ndarray, select_cnt:int, seed=None) -> numpy.ndarray:
     """
 
     assert data.ndim == 2, f"should have data.ndim == 2 by now, but {data.ndim=}"
+
+    select_cnt = int(select_cnt)
 
     if select_cnt >= data.shape[0]:
         print("WARNING: select_cnt >= data.shape[0], return all idxes", file=sys.stderr)
@@ -226,8 +228,16 @@ def sparse_tsne_kmeans(data:numpy.ndarray, select_cnt:int, tsne_dim:int=2, seed=
     return numpy.argmin(dist, axis=0)
 
 
+def sparse_random(data:numpy.ndarray, select_cnt:int, seed=None) -> numpy.ndarray:
+    if not isinstance(seed, int):
+        seed = 0
+    numpy.random.seed(seed)
+    idxes = numpy.arange(data.shape[0])
+    numpy.random.shuffle(idxes)
+    return idxes[:select_cnt]
 
-def new_sample_method(data:numpy.ndarray, select_cnt:int, seed=None):
+
+def new_sample_method(data_path_dict:Dict[str, str], select_cnt:int, seed=None):
     """Try new sample methods for data (shape [nsamples, nfeat])
     """
     import inp
@@ -236,36 +246,51 @@ def new_sample_method(data:numpy.ndarray, select_cnt:int, seed=None):
     geoms = read(inp.filename, ":")
 
     """prepare species data"""
-    atoms_species_flat = numpy.array([g.get_chemical_symbols() for g in geoms]).flatten()
+    atoms_species_flat = numpy.concatenate(numpy.array([g.get_chemical_symbols() for g in geoms]))
     atoms_species_uniq = numpy.sort(numpy.unique(atoms_species_flat))
+    atoms_species_frac = {spe: numpy.sum(atoms_species_flat == spe)/len(atoms_species_flat) for spe in atoms_species_uniq}
+    print(atoms_species_frac)
     species_idxes = {
         species: numpy.where(atoms_species_flat == species)[0]
         for species in atoms_species_uniq
     }
     assert set.union(*[set(v) for v in species_idxes.values()]) == set(range(len(atoms_species_flat)))
 
-    slct_N_from_species = {
-        "S": 80,
-        "Zr": 120,
-    }
     assert set(atoms_species_uniq) == set(["Zr", "S"])
-    assert select_cnt == sum(slct_N_from_species.values())
+
+    assert inp.sample_method in ["fps", "kmeans", "tsne_kmeans", "random"]
+    assert inp.sample_data_lam in [i for i in range(0, inp.nang1+1)]
+    print(f"sample method: {inp.sample_method}, sample data lambda: {inp.sample_data_lam}")
+
+    data = h5py.File(data_path_dict[inp.sample_data_lam], 'r')['descriptor'][:]
+    data = data.reshape(data.shape[0] * data.shape[1], -1)
 
     """run case by case"""
     if inp.balance_species:
+        select_cnt_balspe = {k: int(select_cnt*atoms_species_frac[k]) for k in atoms_species_uniq}
+        if sum(select_cnt_balspe.values()) != select_cnt:
+            select_cnt_balspe[atoms_species_uniq[0]] += select_cnt - sum(select_cnt_balspe.values())
+        print(select_cnt_balspe)
+        assert sum(select_cnt_balspe.values()) == select_cnt, \
+            f"should have sum(select_cnt_balspe.values()) == select_cnt, but have {select_cnt=} and {select_cnt_balspe=}"
         if inp.sample_method == "fps":
             slct_idxes_species = {
-                spe: do_fps_prepare_l(data[spe_idxes], slct_N_from_species[spe])
+                spe: do_fps_prepare_l(data[spe_idxes], select_cnt_balspe[spe], seed)
                 for spe, spe_idxes in species_idxes.items()
             }
         elif inp.sample_method == "kmeans":
             slct_idxes_species = {
-                spe: sparse_kmeans(data[spe_idxes], slct_N_from_species[spe])
+                spe: sparse_kmeans(data[spe_idxes], select_cnt_balspe[spe], seed)
                 for spe, spe_idxes in species_idxes.items()
             }
         elif inp.sample_method == "tsne_kmeans":
             slct_idxes_species = {
-                spe: sparse_kmeans(data[spe_idxes], slct_N_from_species[spe])
+                spe: sparse_tsne_kmeans(data[spe_idxes], select_cnt_balspe[spe], seed=seed)
+                for spe, spe_idxes in species_idxes.items()
+            }
+        elif inp.sample_method == "random":
+            slct_idxes_species = {
+                spe: sparse_random(data[spe_idxes], select_cnt_balspe[spe], seed)
                 for spe, spe_idxes in species_idxes.items()
             }
         else:
@@ -283,11 +308,13 @@ def new_sample_method(data:numpy.ndarray, select_cnt:int, seed=None):
         slct_idxes = numpy.where(slct_idxes_tf)[0]
     else:
         if inp.sample_method == "fps":
-            slct_idxes = do_fps_prepare_l(data, select_cnt)
+            slct_idxes = do_fps_prepare_l(data, select_cnt, seed)
         elif inp.sample_method == "kmeans":
-            slct_idxes = sparse_kmeans(data, select_cnt)
+            slct_idxes = sparse_kmeans(data, select_cnt, seed)
         elif inp.sample_method == "tsne_kmeans":
-            slct_idxes = sparse_tsne_kmeans(data, select_cnt)
+            slct_idxes = sparse_tsne_kmeans(data, select_cnt, seed=seed)
+        elif inp.sample_method == "random":
+            slct_idxes = sparse_random(data, select_cnt, seed)
         else:
             raise ValueError(f"inp.sample_method should in ['fps', 'kmeans', 'tsne_kmeans'], but {inp.sample_method=}")
 
@@ -390,7 +417,10 @@ def build():
         print(f"inp.sample_method not found, use 'fps' as default")
         fps_idx = np.array(do_fps(power.reshape(ndata*natmax,nfeat),M),int)
     else:
-        fps_idx = new_sample_method(power.reshape(ndata*natmax,nfeat), M)
+        fps_idx = new_sample_method(
+            {l:osp.join(sdir, f"FEAT-{l}.h5") for l in range(inp.nang1+1)},
+            M,
+        )
 
     ################################################################
 

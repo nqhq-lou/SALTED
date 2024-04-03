@@ -363,3 +363,215 @@ def basiset(basis):
 
       return [lmax,nmax]
 
+   if basis=="RI_AUTO_OPT-ccGRB-small":
+
+      lmax["Au"] = 4
+
+      nmax[("Au",0)] = 8
+      nmax[("Au",1)] = 8
+      nmax[("Au",2)] = 8
+      nmax[("Au",3)] = 8
+      nmax[("Au",4)] = 6
+
+      return [lmax,nmax]
+
+
+
+   if basis=="ZrS2_intermediate_add_both_aux_240216_1x1_zekun":
+
+      lmax["Zr"] = 6
+      lmax["S"] = 6
+
+      nmax[("Zr",0)] = 14
+      nmax[("Zr",1)] = 13
+      nmax[("Zr",2)] = 13
+      nmax[("Zr",3)] = 13
+      nmax[("Zr",4)] = 13
+      nmax[("Zr",5)] = 10
+      nmax[("Zr",6)] = 8
+
+      nmax[("S",0)] = 11
+      nmax[("S",1)] = 11
+      nmax[("S",2)] = 10
+      nmax[("S",3)] = 9
+      nmax[("S",4)] = 9
+      nmax[("S",5)] = 7
+      nmax[("S",6)] = 6
+
+      return [lmax,nmax]
+
+   if basis=="ZrS2_intermediate_add_both_aux_240306_1x1_zekun":
+
+      lmax["Zr"] = 6
+      lmax["S"] = 6
+
+      nmax[("Zr",0)] = 14
+      nmax[("Zr",1)] = 13
+      nmax[("Zr",2)] = 13
+      nmax[("Zr",3)] = 13
+      nmax[("Zr",4)] = 13
+      nmax[("Zr",5)] = 10
+      nmax[("Zr",6)] = 8
+
+      nmax[("S",0)] = 11
+      nmax[("S",1)] = 11
+      nmax[("S",2)] = 10
+      nmax[("S",3)] = 9
+      nmax[("S",4)] = 9
+      nmax[("S",5)] = 7
+      nmax[("S",6)] = 6
+
+      return [lmax,nmax]
+
+   if basis=="ZrS2_tight_240307_1x1_tight_zekun":
+
+      lmax["Zr"] = 6
+      lmax["S"] = 6
+
+      nmax[("Zr",0)] = 14
+      nmax[("Zr",1)] = 13
+      nmax[("Zr",2)] = 13
+      nmax[("Zr",3)] = 12
+      nmax[("Zr",4)] = 12
+      nmax[("Zr",5)] = 8
+      nmax[("Zr",6)] = 4
+
+      nmax[("S",0)] = 10
+      nmax[("S",1)] = 10
+      nmax[("S",2)] = 10
+      nmax[("S",3)] = 10
+      nmax[("S",4)] = 8
+      nmax[("S",5)] = 5
+      nmax[("S",6)] = 4
+
+      return [lmax,nmax]
+
+   if basis=="ZrS2_light_240310_1x1_light_zekun":
+
+      lmax["Zr"] = 6
+      lmax["S"] = 6
+
+      nmax[("Zr",0)] = 14
+      nmax[("Zr",1)] = 13
+      nmax[("Zr",2)] = 13
+      nmax[("Zr",3)] = 12
+      nmax[("Zr",4)] = 9
+      nmax[("Zr",5)] = 4
+      nmax[("Zr",6)] = 1
+
+      nmax[("S",0)] = 10
+      nmax[("S",1)] = 10
+      nmax[("S",2)] = 9
+      nmax[("S",3)] = 8
+      nmax[("S",4)] = 4
+      nmax[("S",5)] = 2
+      nmax[("S",6)] = 1
+
+      return [lmax,nmax]
+
+   if basis=="ZrS2_tight_240308_2x2_tight_zekun":
+
+      lmax["Zr"] = 6
+      lmax["S"] = 6
+
+      nmax[("Zr",0)] = 14
+      nmax[("Zr",1)] = 13
+      nmax[("Zr",2)] = 13
+      nmax[("Zr",3)] = 12
+      nmax[("Zr",4)] = 12
+      nmax[("Zr",5)] = 8
+      nmax[("Zr",6)] = 4
+
+      nmax[("S",0)] = 10
+      nmax[("S",1)] = 10
+      nmax[("S",2)] = 10
+      nmax[("S",3)] = 10
+      nmax[("S",4)] = 8
+      nmax[("S",5)] = 5
+      nmax[("S",6)] = 4
+
+      return [lmax,nmax]
+
+   if basis=="ZrS2_light_zekun":
+
+      lmax["Zr"] = 6
+      lmax["S"] = 6
+
+      nmax[("Zr",0)] = 14
+      nmax[("Zr",1)] = 13
+      nmax[("Zr",2)] = 13
+      nmax[("Zr",3)] = 12
+      nmax[("Zr",4)] = 9
+      nmax[("Zr",5)] = 4
+      nmax[("Zr",6)] = 1
+
+      nmax[("S",0)] = 10
+      nmax[("S",1)] = 10
+      nmax[("S",2)] = 9
+      nmax[("S",3)] = 8
+      nmax[("S",4)] = 4
+      nmax[("S",5)] = 2
+      nmax[("S",6)] = 1
+
+      return [lmax,nmax]
+
+   if basis=="ZrS2_inter_zekun":
+
+      lmax["Zr"] = 6
+      lmax["S"] = 6
+
+      nmax[("Zr",0)] = 14
+      nmax[("Zr",1)] = 13
+      nmax[("Zr",2)] = 13
+      nmax[("Zr",3)] = 12
+      nmax[("Zr",4)] = 12
+      nmax[("Zr",5)] = 8
+      nmax[("Zr",6)] = 4
+
+      nmax[("S",0)] = 10
+      nmax[("S",1)] = 10
+      nmax[("S",2)] = 9
+      nmax[("S",3)] = 8
+      nmax[("S",4)] = 8
+      nmax[("S",5)] = 4
+      nmax[("S",6)] = 3
+
+      return [lmax,nmax]
+
+   if basis=="ZrS2_tight_zekun":
+
+      lmax["Zr"] = 6
+      lmax["S"] = 6
+
+      nmax[("Zr",0)] = 14
+      nmax[("Zr",1)] = 13
+      nmax[("Zr",2)] = 13
+      nmax[("Zr",3)] = 12
+      nmax[("Zr",4)] = 12
+      nmax[("Zr",5)] = 8
+      nmax[("Zr",6)] = 4
+
+      nmax[("S",0)] = 10
+      nmax[("S",1)] = 10
+      nmax[("S",2)] = 10
+      nmax[("S",3)] = 10
+      nmax[("S",4)] = 8
+      nmax[("S",5)] = 5
+      nmax[("S",6)] = 4
+
+      return [lmax,nmax]
+
+   if basis=="graphene_intermediate_240119_zekun":
+
+      lmax["C"] = 6
+
+      nmax[("C",0)] = 8
+      nmax[("C",1)] = 7
+      nmax[("C",2)] = 7
+      nmax[("C",3)] = 6
+      nmax[("C",4)] = 6
+      nmax[("C",5)] = 5
+      nmax[("C",6)] = 2
+
+      return [lmax,nmax]
+
