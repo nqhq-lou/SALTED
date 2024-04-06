@@ -25,7 +25,7 @@ def read_system(filename=inp.filename):
     llmax = max(llist)
 
     # read system
-    xyzfile = read(filename,":")
+    xyzfile = read(filename,":", parallel=False)
     ndata = len(xyzfile)
 
     # Define system excluding atoms that belong to species not listed in SALTED input
