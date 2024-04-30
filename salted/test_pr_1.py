@@ -1,0 +1,2 @@
+def was():
+    return "was"
