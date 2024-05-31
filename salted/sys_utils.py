@@ -1,5 +1,6 @@
 # ruff: noqa: E501
 import os
+import random
 import re
 from typing import Dict, List, Literal, Optional, Tuple, Union
 
@@ -402,7 +403,7 @@ class ParseConfig:
                 "average": (False, True, bool, None),  # if bias the GPR by the average of predictions
                 "field": (False, False, bool, None),  # if predict the field response
                 "parallel": (False, False, bool, None),  # if use mpi4py
-                "seed": (False, 42, int, None),  # random seed
+                "seed": (False, PLACEHOLDER, int, None),  # random seed
             },
             "qm": {
                 "path2qm": (True, None, str, lambda inp, val: check_path_exists(val)),  # path to the QM calculation outputs
@@ -503,6 +504,9 @@ class ParseConfig:
 
         inp = rec_apply_default_vals(inp, inp_template, "")  # now inp has all the keys as in inp_template in all levels
         rec_check_vals(inp, inp_template, "")
+
+        if inp.system.seed == PLACEHOLDER:
+            inp.system.seed = random.randint(0, 65535)
 
         return inp
 

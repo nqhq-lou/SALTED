@@ -1,10 +1,12 @@
 import os
-import numpy as np
 import random
 import sys
+
+import numpy as np
+
 sys.path.insert(0, './')
 import inp
-from sys_utils import read_system, get_atom_idx
+from sys_utils import get_atom_idx, read_system
 
 spelist, lmax, nmax, llmax, nnmax, ndata, atomic_symbols, natoms, natmax = read_system()
 atom_idx, natom_dict = get_atom_idx(ndata,natoms,spelist,atomic_symbols)
@@ -30,7 +32,7 @@ if not os.path.exists(dirpath):
 
 # training set selection
 dataset = list(range(ndata))
-random.Random(3).shuffle(dataset)
+random.Random(inp.system.seed).shuffle(dataset)
 trainrangetot = dataset[:N]
 np.savetxt("training_set.txt",trainrangetot,fmt='%i')
 #trainrangetot = np.loadtxt("training_set2.txt",int)

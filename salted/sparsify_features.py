@@ -1,24 +1,19 @@
 import os
+import os.path as osp
 import random
 import sys
 import time
-import os.path as osp
 
-import numpy as np
 import h5py
+import numpy as np
 from ase.data import atomic_numbers
 from ase.io import read
-from rascaline import SphericalExpansion
-from rascaline import LodeSphericalExpansion
 from metatensor import Labels
+from rascaline import LodeSphericalExpansion, SphericalExpansion
 
-from salted import wigner
-from salted import sph_utils
-from salted import basis
-
+from salted import basis, sph_utils, wigner
 from salted.lib import equicomb
-from salted.sys_utils import ParseConfig, read_system, get_atom_idx, get_conf_range
-
+from salted.sys_utils import ParseConfig, get_atom_idx, get_conf_range, read_system
 
 
 def build():
@@ -56,7 +51,8 @@ def build():
     print(f"The dataset contains {ndata_true} frames.")
 
     conf_range = list(range(ndata_true))
-    random.Random(3).shuffle(conf_range)
+    print(f"shuffle conf_range with seed {inp.system.seed}")
+    random.Random(inp.system.seed).shuffle(conf_range)
 
     if nsamples <= ndata:
         ndata = nsamples
@@ -72,14 +68,14 @@ def build():
     natoms = list( natoms[i] for i in conf_range )
     natoms_total = sum(natoms)
 
-    def do_fps(x, d=0, initial=-1):
+    def do_fps(x, d=0, initial=-1, seed=0):
         # Code from Giulio Imbalzano
 
         if d == 0 : d = len(x)
         n = len(x)
         iy = np.zeros(d,int)
         if (initial == -1):
-            iy[0] = np.random.randint(0,n)
+            iy[0] = random.Random(seed).randint(0, n)
         else:
             iy[0] = initial
         # Faster evaluation of Euclidean distance
@@ -246,7 +242,7 @@ def build():
 
         print("fps...")
         pvec = pvec.reshape(ndata*natmax*(2*lam+1),featsize)
-        vfps = do_fps(pvec.T,ncut,0)
+        vfps = do_fps(pvec.T, ncut, 0, inp.system.seed)
         np.save(osp.join(sdir, f"fps{ncut}-{lam}.npy"), vfps)
 
     print(f"time: {(time.time()-start):.2f}")

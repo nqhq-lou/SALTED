@@ -1,20 +1,21 @@
 import os
+import random
 import sys
-import numpy as np
 import time
+from random import shuffle
+
 import ase
+import basis
+import numpy as np
 from ase import io
 from ase.io import read
-import random
-from random import shuffle
+from mpi4py import MPI
 from scipy import sparse
 from scipy.optimize import minimize
-from mpi4py import MPI
-
-import basis
 
 sys.path.insert(0, './')
 import inp
+
 # MPI information
 comm = MPI.COMM_WORLD
 size = comm.Get_size()
@@ -83,7 +84,7 @@ for spe in spelist:
 
 # define training set at random
 dataset = list(range(ndata))
-#random.Random(3).shuffle(dataset)
+#random.Random(inp.system.seed).shuffle(dataset)
 trainrangetot = dataset[:inp.Ntrain]
 np.savetxt("training_set_N"+str(inp.Ntrain)+".txt",trainrangetot,fmt='%i')
 #trainrangetot = np.loadtxt("training_set.txt",int)

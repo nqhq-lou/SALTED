@@ -80,7 +80,8 @@ def build():
     if trainsel=="sequential":
         trainrangetot = dataset[:Ntrain]
     elif trainsel=="random":
-        random.Random(3).shuffle(dataset)
+        print(f"shuffle dataset with seed {inp.system.seed}")
+        random.Random(inp.system.seed).shuffle(dataset)
         trainrangetot = dataset[:Ntrain]
     else:
         raise ValueError(f"training set selection {trainsel=} not available!")

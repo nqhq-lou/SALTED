@@ -63,7 +63,8 @@ def build():
     if inp.gpr.trainsel=="sequential":
         trainrangetot = dataset[:inp.gpr.Ntrain]
     elif inp.gpr.trainsel=="random":
-        random.Random(3).shuffle(dataset)
+        print(f"shuffle dataset with seed {inp.system.seed}")
+        random.Random(inp.system.seed).shuffle(dataset)
         trainrangetot = dataset[:inp.gpr.Ntrain]
     else:
         raise ValueError(f"training set selection {inp.gpr.trainsel=} not available!")
